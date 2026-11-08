@@ -135,7 +135,7 @@ final class StatisticsViewController: NSViewController {
         let privacyLabel = NSTextField(labelWithString: "记录仅保存在本机，不包含输入内容；分享由你主动发起")
         privacyLabel.textColor = .secondaryLabelColor
         privacyLabel.font = .systemFont(ofSize: 11)
-        let clearButton = NSButton(title: "清空统计…", target: self, action: #selector(clearStatistics))
+        let clearButton = NSButton(title: "清空统计", target: self, action: #selector(clearStatistics))
         clearButton.bezelStyle = .rounded
         clearButton.image = NSImage(systemSymbolName: "trash", accessibilityDescription: nil)
         clearButton.imagePosition = .imageLeading
