@@ -1,7 +1,7 @@
 import AppKit
 import InputSwitchCore
 
-final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate {
     private let store = RuleStore()
     private let inputSources = CarbonInputSourceService()
     private let eventStore = SwitchEventStore(fileURL: FileManager.default.homeDirectoryForCurrentUser
@@ -10,7 +10,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var monitor: AppActivationMonitor?
     private var window: NSWindow?
     private var statusItem: NSStatusItem?
-    private var pauseMenuItem: NSMenuItem?
+    private var statusPopover: NSPopover?
+    private var pauseButton: NSButton?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
@@ -33,11 +34,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         return true
     }
 
-    func menuNeedsUpdate(_ menu: NSMenu) {
-        pauseMenuItem?.title = store.isPaused ? "恢复自动切换" : "暂停自动切换"
-    }
-
     @objc private func showWindow() {
+        statusPopover?.close()
         if window == nil {
             let window = NSWindow(
                 contentRect: NSRect(x: 0, y: 0, width: 760, height: 600),
@@ -64,6 +62,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func togglePause() {
+        statusPopover?.close()
         store.isPaused.toggle()
     }
 
@@ -80,6 +79,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         ))
     }
 
+    @objc private func showStatusMenu() {
+        guard let button = statusItem?.button else { return }
+        pauseButton?.title = store.isPaused ? "恢复自动切换" : "暂停自动切换"
+        statusPopover?.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        if let popoverWindow = statusPopover?.contentViewController?.view.window {
+            popoverWindow.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+            popoverWindow.makeFirstResponder(nil)
+        }
+    }
+
     private func configureStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let url = Bundle.main.url(forResource: "MenuBarIcon", withExtension: "png") {
@@ -92,14 +101,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         statusItem?.button?.setAccessibilityLabel("输入法切换")
 
-        let menu = NSMenu()
-        menu.delegate = self
-        menu.addItem(withTitle: "打开规则", action: #selector(showWindow), keyEquivalent: "")
-        pauseMenuItem = NSMenuItem(title: "暂停自动切换", action: #selector(togglePause), keyEquivalent: "")
-        menu.addItem(pauseMenuItem!)
-        menu.addItem(.separator())
-        menu.addItem(withTitle: "退出", action: #selector(quit), keyEquivalent: "q")
-        menu.items.forEach { $0.target = self }
-        statusItem?.menu = menu
+        let openButton = NSButton(title: "打开规则", target: self, action: #selector(showWindow))
+        let pauseButton = NSButton(title: "暂停自动切换", target: self, action: #selector(togglePause))
+        let quitButton = NSButton(title: "退出", target: self, action: #selector(quit))
+        for button in [openButton, pauseButton, quitButton] {
+            button.isBordered = false
+            button.alignment = .left
+        }
+
+        let content = NSStackView(views: [openButton, pauseButton, quitButton])
+        content.orientation = .vertical
+        content.alignment = .leading
+        content.spacing = 6
+        content.edgeInsets = NSEdgeInsets(top: 8, left: 10, bottom: 8, right: 10)
+        content.frame = NSRect(x: 0, y: 0, width: 160, height: 100)
+
+        let contentController = NSViewController()
+        contentController.view = content
+
+        // 全屏 Space 中不能依赖需要成为 key window 的 NSMenu。
+        let popover = NSPopover()
+        popover.contentViewController = contentController
+        popover.behavior = .transient
+        popover.animates = false
+        statusPopover = popover
+        self.pauseButton = pauseButton
+
+        statusItem?.button?.target = self
+        statusItem?.button?.action = #selector(showStatusMenu)
+        statusItem?.button?.sendAction(on: [.leftMouseUp])
     }
 }
