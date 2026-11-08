@@ -130,7 +130,7 @@ final class RulesViewController: NSViewController, NSTableViewDataSource, NSTabl
 
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.usesAlternatingRowBackgroundColors = true
+        tableView.usesAlternatingRowBackgroundColors = false
         tableView.rowHeight = 32
         tableView.doubleAction = #selector(editSelectedRule)
         tableView.target = self
