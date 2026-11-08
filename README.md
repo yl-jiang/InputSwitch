@@ -19,7 +19,7 @@ InputSwitch 是一个原生 macOS 小工具：为每个应用指定输入法，�
 
 ### 直接安装
 
-1. [下载 InputSwitch 0.1.0 DMG](https://github.com/yl-jiang/InputSwitch/releases/download/v0.1.0/InputSwitch-0.1.0-macOS.dmg)。
+1. [下载 InputSwitch 0.1.1 DMG](https://github.com/yl-jiang/InputSwitch/releases/download/v0.1.1/InputSwitch-0.1.1-macOS.dmg)。
 2. 打开下载的 DMG，将 InputSwitch 拖入 Applications。
 3. 从「应用程序」文件夹启动。
 
