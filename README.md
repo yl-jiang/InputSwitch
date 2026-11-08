@@ -13,6 +13,12 @@ InputSwitch 是一个原生 macOS 小工具：为每个应用指定输入法，�
 - 通过年度热力图、高频 App 和最近切换记录查看使用效果；鼠标停在格子上可查看当天详情。
 - 无第三方依赖，支持登录时启动；可从 Dock、应用切换器或菜单栏返回。
 
+## 界面预览
+
+![规则设置：为 Visual Studio Code 指定 ABC](docs/images/rules.png)
+
+![菜单栏快捷操作](docs/images/menu.png)
+
 ## 安装与启动
 
 需要 macOS 13 或更高版本。
