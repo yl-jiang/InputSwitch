@@ -67,15 +67,29 @@ final class RulesViewController: NSViewController, NSTableViewDataSource, NSTabl
 
     private func makeAppCell(for rule: Rule) -> NSTableCellView {
         let cell = NSTableCellView()
+        let iconView = NSImageView()
+        if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: rule.bundleID) {
+            iconView.image = NSWorkspace.shared.icon(forFile: url.path)
+        } else {
+            iconView.image = NSImage(systemSymbolName: "app", accessibilityDescription: nil)
+        }
+        iconView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        iconView.heightAnchor.constraint(equalToConstant: 20).isActive = true
+
         let textField = NSTextField(labelWithString: rule.appName)
         textField.lineBreakMode = .byTruncatingMiddle
-        textField.translatesAutoresizingMaskIntoConstraints = false
         cell.textField = textField
-        cell.addSubview(textField)
+
+        let content = NSStackView(views: [iconView, textField])
+        content.orientation = .horizontal
+        content.alignment = .centerY
+        content.spacing = 8
+        content.translatesAutoresizingMaskIntoConstraints = false
+        cell.addSubview(content)
         NSLayoutConstraint.activate([
-            textField.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 8),
-            textField.trailingAnchor.constraint(lessThanOrEqualTo: cell.trailingAnchor, constant: -8),
-            textField.centerYAnchor.constraint(equalTo: cell.centerYAnchor)
+            content.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 8),
+            content.trailingAnchor.constraint(lessThanOrEqualTo: cell.trailingAnchor, constant: -8),
+            content.centerYAnchor.constraint(equalTo: cell.centerYAnchor)
         ])
         return cell
     }
