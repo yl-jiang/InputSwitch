@@ -4,7 +4,7 @@
 
 InputSwitch 是一个原生 macOS 小工具：为每个应用指定输入法，切换应用时自动生效，无需反复手动切换。
 
-![InputSwitch 使用统计界面](docs/images/statistics.jpg)
+![InputSwitch 使用统计界面](docs/images/statistics.png)
 
 ## 功能
 
@@ -17,7 +17,7 @@ InputSwitch 是一个原生 macOS 小工具：为每个应用指定输入法，�
 
 ![规则设置：为 Visual Studio Code 指定 ABC](docs/images/rules.png)
 
-![菜单栏快捷操作](docs/images/menu.png)
+![选择应用与输入法](docs/images/rule-editor.png)
 
 ## 安装与启动
 
