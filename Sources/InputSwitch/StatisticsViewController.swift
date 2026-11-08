@@ -136,8 +136,12 @@ final class StatisticsViewController: NSViewController {
         privacyLabel.textColor = .secondaryLabelColor
         privacyLabel.font = .systemFont(ofSize: 11)
         let clearButton = NSButton(title: "清空统计…", target: self, action: #selector(clearStatistics))
-        clearButton.isBordered = false
-        clearButton.contentTintColor = .secondaryLabelColor
+        clearButton.bezelStyle = .rounded
+        clearButton.image = NSImage(systemSymbolName: "trash", accessibilityDescription: nil)
+        clearButton.imagePosition = .imageLeading
+        clearButton.imageScaling = .scaleProportionallyDown
+        clearButton.font = .systemFont(ofSize: 13, weight: .medium)
+        clearButton.contentTintColor = .systemRed
         let footer = NSStackView(views: [privacyLabel, NSView(frame: NSRect(x: 0, y: 0, width: 1, height: 1)), clearButton])
         footer.orientation = .horizontal
 
