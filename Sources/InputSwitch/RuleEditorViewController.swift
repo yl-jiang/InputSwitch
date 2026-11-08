@@ -1,5 +1,6 @@
 import AppKit
 import InputSwitchCore
+import UniformTypeIdentifiers
 
 final class RuleEditorViewController: NSViewController {
     private struct AppInfo {
@@ -10,7 +11,8 @@ final class RuleEditorViewController: NSViewController {
     private let existingRule: Rule?
     private let inputSources: CarbonInputSourceService
     private let onSave: (Rule) -> Void
-    private let appPopUp = NSPopUpButton()
+    private var selectedApp: AppInfo?
+    private let appButton = NSButton(title: "选择应用…", target: nil, action: nil)
     private let sourcePopUp = NSPopUpButton()
     private let saveButton = NSButton(title: "保存", target: nil, action: nil)
 
@@ -32,13 +34,14 @@ final class RuleEditorViewController: NSViewController {
     }
 
     private func configureLayout() {
-        appPopUp.target = self
-        appPopUp.action = #selector(selectionChanged)
+        appButton.target = self
+        appButton.action = #selector(chooseApplication)
+        appButton.setAccessibilityLabel("选择应用")
         sourcePopUp.target = self
         sourcePopUp.action = #selector(selectionChanged)
 
-        let appRow = choiceRow(label: "应用", popUp: appPopUp)
-        let sourceRow = choiceRow(label: "输入法", popUp: sourcePopUp)
+        let appRow = choiceRow(label: "应用", control: appButton)
+        let sourceRow = choiceRow(label: "输入法", control: sourcePopUp)
 
         let cancelButton = NSButton(title: "取消", target: self, action: #selector(cancel))
         cancelButton.keyEquivalent = "\u{1b}"
@@ -66,34 +69,18 @@ final class RuleEditorViewController: NSViewController {
         ])
     }
 
-    private func choiceRow(label: String, popUp: NSPopUpButton) -> NSStackView {
+    private func choiceRow(label: String, control: NSControl) -> NSStackView {
         let labelField = NSTextField(labelWithString: label)
         labelField.alignment = .right
         labelField.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        popUp.widthAnchor.constraint(equalToConstant: 300).isActive = true
-        let row = NSStackView(views: [labelField, popUp])
+        control.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        let row = NSStackView(views: [labelField, control])
         row.orientation = .horizontal
         row.spacing = 12
         return row
     }
 
     private func loadChoices() {
-        var seen = Set<String>()
-        var apps = NSWorkspace.shared.runningApplications.compactMap { app -> AppInfo? in
-            guard app.activationPolicy == .regular,
-                  app.bundleIdentifier != Bundle.main.bundleIdentifier,
-                  let bundleID = app.bundleIdentifier,
-                  let name = app.localizedName,
-                  seen.insert(bundleID).inserted else {
-                return nil
-            }
-            return AppInfo(id: bundleID, name: name)
-        }
-        if let existingRule, !apps.contains(where: { $0.id == existingRule.bundleID }) {
-            apps.append(AppInfo(id: existingRule.bundleID, name: existingRule.appName))
-        }
-        apps.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-
         var sources = inputSources.availableInputSources()
         if let existingRule, !sources.contains(where: { $0.id == existingRule.inputSourceID }) {
             sources.append(InputSourceInfo(
@@ -102,11 +89,6 @@ final class RuleEditorViewController: NSViewController {
             ))
         }
 
-        appPopUp.addItem(withTitle: "请选择")
-        for app in apps {
-            appPopUp.addItem(withTitle: app.name)
-            appPopUp.lastItem?.representedObject = app
-        }
         sourcePopUp.addItem(withTitle: "请选择")
         for source in sources {
             sourcePopUp.addItem(withTitle: source.name)
@@ -114,32 +96,59 @@ final class RuleEditorViewController: NSViewController {
         }
 
         if let existingRule {
-            selectItem(in: appPopUp, id: existingRule.bundleID)
-            selectItem(in: sourcePopUp, id: existingRule.inputSourceID)
+            selectedApp = AppInfo(id: existingRule.bundleID, name: existingRule.appName)
+            appButton.title = existingRule.appName
+            selectSource(id: existingRule.inputSourceID)
         }
         selectionChanged()
     }
 
-    private func selectItem(in popUp: NSPopUpButton, id: String) {
-        for item in popUp.itemArray {
-            if let app = item.representedObject as? AppInfo, app.id == id {
-                popUp.select(item)
-                return
-            }
+    private func selectSource(id: String) {
+        for item in sourcePopUp.itemArray {
             if let source = item.representedObject as? InputSourceInfo, source.id == id {
-                popUp.select(item)
+                sourcePopUp.select(item)
                 return
             }
         }
     }
 
+    @objc private func chooseApplication() {
+        let panel = NSOpenPanel()
+        panel.directoryURL = URL(fileURLWithPath: "/Applications", isDirectory: true)
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+        panel.allowedContentTypes = [.applicationBundle]
+        panel.prompt = "选择"
+
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        guard let bundle = Bundle(url: url),
+              let bundleID = bundle.bundleIdentifier,
+              !bundleID.isEmpty else {
+            let alert = NSAlert()
+            alert.messageText = "无法读取所选应用"
+            alert.informativeText = "请选择有效的 macOS 应用。"
+            alert.runModal()
+            return
+        }
+
+        let name = (bundle.localizedInfoDictionary?["CFBundleDisplayName"] as? String)
+            ?? (bundle.infoDictionary?["CFBundleDisplayName"] as? String)
+            ?? (bundle.localizedInfoDictionary?["CFBundleName"] as? String)
+            ?? (bundle.infoDictionary?["CFBundleName"] as? String)
+            ?? url.deletingPathExtension().lastPathComponent
+        selectedApp = AppInfo(id: bundleID, name: name)
+        appButton.title = name
+        selectionChanged()
+    }
+
     @objc private func selectionChanged() {
-        saveButton.isEnabled = appPopUp.selectedItem?.representedObject != nil
+        saveButton.isEnabled = selectedApp != nil
             && sourcePopUp.selectedItem?.representedObject != nil
     }
 
     @objc private func save() {
-        guard let app = appPopUp.selectedItem?.representedObject as? AppInfo,
+        guard let app = selectedApp,
               let source = sourcePopUp.selectedItem?.representedObject as? InputSourceInfo else {
             return
         }
