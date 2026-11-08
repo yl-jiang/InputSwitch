@@ -87,10 +87,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         pauseButton?.itemImage = statusImage(store.isPaused ? "play.fill" : "pause.fill")
 
         let mouseLocation = NSEvent.mouseLocation
-        if let screen = NSScreen.screens.first(where: { $0.frame.contains(mouseLocation) }) {
-            presentStatusPopover(on: screen, at: mouseLocation)
-        } else if let button = statusItem?.button {
+        if let button = statusItem?.button,
+           (button.window?.screen?.frame.contains(mouseLocation) ?? true) {
             statusPopover?.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        } else if let screen = NSScreen.screens.first(where: { $0.frame.contains(mouseLocation) }) {
+            presentStatusPopover(on: screen, at: mouseLocation)
         }
 
         if let popoverWindow = statusPopover?.contentViewController?.view.window {
