@@ -15,7 +15,17 @@ InputSwitch 是一个原生 macOS 小工具：为每个应用指定输入法，�
 
 ## 安装与启动
 
-目前请从源码构建，需要 macOS 13 或更高版本，以及 Swift 命令行开发工具。
+需要 macOS 13 或更高版本。
+
+### 直接安装
+
+1. [下载 InputSwitch 0.1.0 DMG](https://github.com/yl-jiang/InputSwitch/releases/download/v0.1.0/InputSwitch-0.1.0-macOS.dmg)。
+2. 打开下载的 DMG，将 InputSwitch 拖入 Applications。
+3. 从「应用程序」文件夹启动。
+
+当前版本使用 ad-hoc 签名，尚未经过 Apple 公证。首次打开若提示无法验证开发者，在 Finder 中右键点击 InputSwitch，选择「打开」并确认。若仍被阻止，在「系统设置 → 隐私与安全性」中选择「仍要打开」。
+
+### 从源码构建
 
 ```bash
 git clone https://github.com/yl-jiang/InputSwitch.git
