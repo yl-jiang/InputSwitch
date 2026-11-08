@@ -57,6 +57,14 @@ final class RulesViewController: NSViewController, NSTableViewDataSource, NSTabl
         return makeInputSourceCell(for: rule)
     }
 
+    func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
+        let rowView = NSTableRowView()
+        rowView.backgroundColor = row.isMultiple(of: 2)
+            ? NSColor.labelColor.withAlphaComponent(0.035)
+            : .clear
+        return rowView
+    }
+
     private func makeAppCell(for rule: Rule) -> NSTableCellView {
         let cell = NSTableCellView()
         let textField = NSTextField(labelWithString: rule.appName)
