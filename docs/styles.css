@@ -208,6 +208,17 @@ a:hover {
   padding: 0 1rem;
 }
 
+.github-star {
+  gap: 0.45rem;
+}
+
+.github-star svg {
+  inline-size: 1.05rem;
+  block-size: 1.05rem;
+  flex: none;
+  pointer-events: none;
+}
+
 .site-nav > a.btn-primary,
 .site-nav > a.btn-primary:hover {
   color: var(--surface);
