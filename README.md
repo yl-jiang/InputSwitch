@@ -64,3 +64,5 @@ open dist/InputSwitch.app
 ## 开发与贡献
 
 运行 `make test` 执行测试。欢迎通过 [Issues](https://github.com/yl-jiang/InputSwitch/issues) 反馈问题，或提交 Pull Request 改进项目。
+
+如果 InputSwitch 帮到了你，欢迎给仓库一个 Star，让更多 Mac 用户发现它。
