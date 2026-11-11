@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InputSwitch — 进入应用，自动切换到你常用的输入法</title>
+<meta name="description" content="InputSwitch 是一个原生 macOS 小工具：为每个应用指定输入法，切换应用时自动生效，无需反复手动切换。规则和统计仅保存在本机，不记录输入内容。">
+<link rel="canonical" href="https://yl-jiang.github.io/InputSwitch/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:title" content="InputSwitch — 进入应用，自动切换到你常用的输入法">
+<meta property="og:description" content="为每个应用指定输入法，切换应用时自动生效。原生 macOS，免费开源，数据只留在本机。">
+<meta property="og:url" content="https://yl-jiang.github.io/InputSwitch/">
+<meta property="og:image" content="https://yl-jiang.github.io/InputSwitch/images/statistics.png">
+<link rel="icon" type="image/png" href="images/app-icon.png">
+<link rel="apple-touch-icon" href="images/app-icon.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="index.html">
+      <img src="images/app-icon.png" alt="" width="28" height="28">
+      <span>InputSwitch</span>
+    </a>
+    <nav class="site-nav" aria-label="站内导航">
+      <a href="#usage">三步上手</a>
+      <a href="#stats">统计与隐私</a>
+      <a href="#install">安装</a>
+      <a class="btn btn-primary btn-sm" href="https://github.com/yl-jiang/InputSwitch/releases/download/v0.1.4/InputSwitch-0.1.4-macOS.dmg">下载 DMG</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow reveal">macOS 原生小工具 · 免费开源</p>
+        <h1 class="reveal d1">进入应用，<br>自动切换输入法</h1>
+        <p class="lead reveal d2">让 VS&nbsp;Code 永远停在 ABC，让微信直接进中文输入。为每个应用指定一次输入法，切换应用时自动生效，无需反复手动切换。</p>
+        <div class="hero-actions reveal d3">
+          <a class="btn btn-primary" href="https://github.com/yl-jiang/InputSwitch/releases/download/v0.1.4/InputSwitch-0.1.4-macOS.dmg">下载 InputSwitch 0.1.4</a>
+          <a class="btn btn-ghost" href="https://github.com/yl-jiang/InputSwitch">查看源代码</a>
+        </div>
+        <p class="hero-note reveal d3">需要 macOS 13 或更高版本 · 无第三方依赖</p>
+      </div>
+      <figure class="hero-shot reveal d2">
+        <picture>
+          <source type="image/webp" srcset="images/rules-1000.webp 1000w, images/rules-1600.webp 1600w" sizes="(max-width: 760px) 92vw, 620px">
+          <img src="images/rules.png" width="2548" height="1500" fetchpriority="high" decoding="async" alt="InputSwitch 规则界面：为每个应用指定输入法，例如让 Visual Studio Code 使用 ABC，其他应用使用中文输入法">
+        </picture>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="usage">
+    <div class="container">
+      <h2>三步上手</h2>
+      <ol class="steps">
+        <li>
+          <h3>添加规则</h3>
+          <p>点击「添加规则」，在弹窗中选择应用和对应的输入法。已有规则可以直接点击输入法列重新选择。</p>
+        </li>
+        <li>
+          <h3>自动生效</h3>
+          <p>切换到已配置的应用时，InputSwitch 在需要时自动切换输入法。临时不需要自动切换，可随时暂停。</p>
+        </li>
+        <li>
+          <h3>查看统计</h3>
+          <p>通过年度热力图、高频 App 和最近切换记录查看使用效果。可勾选「登录时启动」，并从 Dock 或应用切换器随时返回。</p>
+        </li>
+      </ol>
+      <figure class="shot shot-editor">
+        <picture>
+          <source type="image/webp" srcset="images/rule-editor-840.webp 840w" sizes="(max-width: 760px) 92vw, 840px">
+          <img src="images/rule-editor.png" width="840" height="340" loading="lazy" decoding="async" alt="添加规则弹窗：在应用列表中选择应用，再选择对应的输入法">
+        </picture>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="stats">
+    <div class="container stats-grid">
+      <div class="stats-copy">
+        <h2>统计看得见，数据不出本机</h2>
+        <p>「统计」页记录每天由 InputSwitch 自动完成的切换次数，用年度热力图、高频 App 排行和最近切换记录展示使用效果；鼠标停在热力图格子上可查看当天详情。</p>
+        <ul class="plain-list">
+          <li>规则和统计仅保存在本机，不记录输入内容，也不会自动上传。</li>
+          <li>只有主动点击「分享」时，统计才会交给系统分享服务。</li>
+          <li>关闭窗口不会退出应用，可从 Dock、应用切换器或菜单栏返回。</li>
+        </ul>
+      </div>
+      <figure class="shot">
+        <picture>
+          <source type="image/webp" srcset="images/statistics-1000.webp 1000w, images/statistics-1600.webp 1600w" sizes="(max-width: 760px) 92vw, 560px">
+          <img src="images/statistics.png" width="2548" height="1500" loading="lazy" decoding="async" alt="InputSwitch 统计界面：年度热力图、高频 App 排行和最近切换记录">
+        </picture>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="install">
+    <div class="container container-narrow">
+      <h2>安装与首次打开</h2>
+      <ol class="steps steps-install">
+        <li>
+          <h3>下载并打开 DMG</h3>
+          <p><a href="https://github.com/yl-jiang/InputSwitch/releases/download/v0.1.4/InputSwitch-0.1.4-macOS.dmg">下载 InputSwitch 0.1.4</a>（需要 macOS 13 或更高版本），双击打开下载的 DMG。</p>
+        </li>
+        <li>
+          <h3>拖入应用程序</h3>
+          <p>将 InputSwitch 拖入 Applications 文件夹。</p>
+        </li>
+        <li>
+          <h3>从应用程序启动</h3>
+          <p>在「应用程序」文件夹中启动 InputSwitch，添加第一条规则即可。</p>
+        </li>
+      </ol>
+
+      <h3 class="callout-title">首次打开的安全提示</h3>
+      <div class="callout">
+        <p>当前版本使用 ad-hoc 签名，未经过 Apple 公证。在其他 Mac 上首次打开时，macOS 可能提示「无法验证开发者」并阻止打开。这表示 Apple 尚未核验开发者身份，不是病毒检测结果。建议只从本仓库 Releases 下载。</p>
+        <p>放行只需要两步，无需关闭 Gatekeeper 或 SIP，也无需运行任何终端命令：</p>
+        <ol class="mini-steps">
+          <li>在 Finder 的「应用程序」中<strong>右键</strong>点击 InputSwitch，选择「打开」，再确认「打开」。</li>
+          <li>如果仍被阻止，打开「系统设置 → 隐私与安全性」，在安全性区域找到 InputSwitch 的「仍要打开」并确认。</li>
+        </ol>
+        <p>项目源代码公开，可以检查代码或自行从源码构建；规则和统计仅保存在本机。</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p class="footer-brand">
+      <img src="images/app-icon.png" alt="" width="22" height="22">
+      <span>InputSwitch</span>
+    </p>
+    <nav class="footer-nav" aria-label="页脚导航">
+      <a href="https://github.com/yl-jiang/InputSwitch">源代码</a>
+      <a href="https://github.com/yl-jiang/InputSwitch/issues">问题反馈</a>
+      <a href="https://github.com/yl-jiang/InputSwitch/releases/download/v0.1.4/InputSwitch-0.1.4-macOS.dmg">下载 0.1.4</a>
+      <a href="index.html">返回首页</a>
+    </nav>
+    <p class="footer-note">免费开源 · 无第三方依赖 · 数据只留在本机</p>
+  </div>
+</footer>
+</body>
+</html>

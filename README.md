@@ -4,6 +4,8 @@
 
 InputSwitch 是一个原生 macOS 小工具：为每个应用指定输入法，切换应用时自动生效，无需反复手动切换。
 
+官方网站：<https://yl-jiang.github.io/InputSwitch/>
+
 ![InputSwitch 使用统计界面](docs/images/statistics.png)
 
 ## 功能
