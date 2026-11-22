@@ -18,7 +18,6 @@ final class ContributionHeatmapView: NSView {
 
     private struct Layout {
         let cells: [Cell]
-        let columns: Int
         let cellSize: CGFloat
         let spacing: CGFloat
         let labelWidth: CGFloat
@@ -50,7 +49,7 @@ final class ContributionHeatmapView: NSView {
 
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
-        setAccessibilityLabel("年度切换热力图")
+        setAccessibilityLabel("切换热力图")
         setAccessibilityRole(.list)
         refreshTrackingAreas()
     }
@@ -164,7 +163,6 @@ final class ContributionHeatmapView: NSView {
         }
         return Layout(
             cells: cells,
-            columns: columns,
             cellSize: cellSize,
             spacing: spacing,
             labelWidth: labelWidth,
@@ -209,15 +207,14 @@ final class ContributionHeatmapView: NSView {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "MMM"
-        var previousMonth = -1
-        for column in 0..<layout.columns {
-            guard let cell = layout.cells.first(where: { $0.column == column }) else { continue }
-            let month = Calendar.current.component(.month, from: cell.entry.date)
-            if column == 0 || month != previousMonth {
-                let x = layout.labelWidth + CGFloat(column) * (layout.cellSize + layout.spacing)
+        var previousMonth: DateComponents?
+        for cell in layout.cells {
+            let components = Calendar.current.dateComponents([.year, .month], from: cell.entry.date)
+            if components != previousMonth {
+                let x = layout.labelWidth + CGFloat(cell.column) * (layout.cellSize + layout.spacing)
                 drawText(formatter.string(from: cell.entry.date), at: NSPoint(x: x, y: 0), size: 9 * layout.scale)
             }
-            previousMonth = month
+            previousMonth = components
         }
     }
 

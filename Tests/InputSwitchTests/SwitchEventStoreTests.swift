@@ -92,6 +92,24 @@ struct StatisticsAggregatorTests {
         )
     }
 
+    static func shouldReturnLastYearDailyCountsAcrossYears() {
+        let now = calendar.date(from: DateComponents(year: 2026, month: 11, day: 22, hour: 12))!
+        let expectedStart = calendar.date(from: DateComponents(year: 2025, month: 11, day: 23))!
+        let events = [
+            SwitchEventStoreTests.makeEvent(timestamp: expectedStart),
+            SwitchEventStoreTests.makeEvent(timestamp: expectedStart.addingTimeInterval(-86400)),
+            SwitchEventStoreTests.makeEvent(timestamp: now),
+        ]
+
+        let counts = StatisticsAggregator.lastYearDailyCounts(events: events, now: now, calendar: calendar)
+
+        expectEqual(counts.count, 365, "最近一年应包含截至今天的 365 天")
+        expectEqual(counts.first?.date, expectedStart, "最近一年应从今天向前滚动，而非从 1 月 1 日开始")
+        expectEqual(counts.last?.date, calendar.startOfDay(for: now), "最近一年应包含今天")
+        expectEqual(counts.first?.count, 1, "应包含起点日期的记录")
+        expectEqual(counts.last?.count, 1, "应包含今天的记录")
+    }
+
     static func shouldReturnEmptyWhenDaysNotPositive() {
         let counts = StatisticsAggregator.dailyCounts(
             events: [],

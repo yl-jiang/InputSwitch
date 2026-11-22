@@ -27,7 +27,7 @@ final class StatisticsViewController: NSViewController {
 
     private let shareButton = NSButton(title: "分享", target: nil, action: nil)
     private let todayCountLabel = NSTextField(labelWithString: "0")
-    private let yearControl = NSPopUpButton()
+    private let periodControl = NSPopUpButton()
     private let chartTitleLabel = NSTextField(labelWithString: "")
     private let chartView = ContributionHeatmapView()
     private let appsStack = NSStackView()
@@ -91,11 +91,11 @@ final class StatisticsViewController: NSViewController {
         summaryContent.spacing = 16
         let summaryCard = card(for: summaryContent)
 
-        yearControl.target = self
-        yearControl.action = #selector(changeYear)
-        yearControl.setAccessibilityLabel("年份")
+        periodControl.target = self
+        periodControl.action = #selector(changePeriod)
+        periodControl.setAccessibilityLabel("统计范围")
         chartTitleLabel.font = .systemFont(ofSize: 16, weight: .semibold)
-        let chartHeader = NSStackView(views: [chartTitleLabel, NSView(frame: NSRect(x: 0, y: 0, width: 1, height: 1)), yearControl])
+        let chartHeader = NSStackView(views: [chartTitleLabel, NSView(frame: NSRect(x: 0, y: 0, width: 1, height: 1)), periodControl])
         chartHeader.orientation = .horizontal
         chartView.heightAnchor.constraint(equalTo: chartView.widthAnchor, multiplier: 0.23).isActive = true
         let chartSection = NSStackView(views: [chartHeader, chartView])
@@ -211,11 +211,17 @@ final class StatisticsViewController: NSViewController {
         todayCountLabel.stringValue = String(StatisticsAggregator.todayCount(events: events, now: now))
         todayCountLabel.setAccessibilityLabel("今天减少的手动切换次数")
 
-        updateYearChoices(events: events, now: now)
-        let year = Int(yearControl.titleOfSelectedItem ?? "") ?? Calendar.current.component(.year, from: now)
-        let entries = entriesForYear(year, events: events)
+        updatePeriodChoices(events: events, now: now)
+        let selectedPeriod = periodControl.titleOfSelectedItem ?? ""
+        let entries: [DailyCount]
+        if let year = Int(selectedPeriod) {
+            entries = entriesForYear(year, events: events)
+            chartTitleLabel.stringValue = "\(year) 年共 \(entries.reduce(0) { $0 + $1.count }) 次切换"
+        } else {
+            entries = StatisticsAggregator.lastYearDailyCounts(events: events, now: now)
+            chartTitleLabel.stringValue = "最近一年共 \(entries.reduce(0) { $0 + $1.count }) 次切换"
+        }
         chartView.entries = entries
-        chartTitleLabel.stringValue = "\(year) 年共 \(entries.reduce(0) { $0 + $1.count }) 次切换"
         updateApps(StatisticsAggregator.topApps(events: events, limit: 5))
         updateRecent(events.sorted { $0.timestamp > $1.timestamp }.prefix(6))
     }
@@ -322,21 +328,21 @@ final class StatisticsViewController: NSViewController {
         }
     }
 
-    private func updateYearChoices(events: [SwitchEvent], now: Date) {
+    private func updatePeriodChoices(events: [SwitchEvent], now: Date) {
         let calendar = Calendar.current
         let currentYear = calendar.component(.year, from: now)
-        let selected = yearControl.titleOfSelectedItem
+        let selected = periodControl.titleOfSelectedItem
         var years = Set(events.map { calendar.component(.year, from: $0.timestamp) })
         years.insert(currentYear)
-        let titles = years.sorted(by: >).map(String.init)
-        if yearControl.itemTitles != titles {
-            yearControl.removeAllItems()
-            yearControl.addItems(withTitles: titles)
+        let titles = ["最近一年"] + years.sorted(by: >).map(String.init)
+        if periodControl.itemTitles != titles {
+            periodControl.removeAllItems()
+            periodControl.addItems(withTitles: titles)
         }
         if let selected, titles.contains(selected) {
-            yearControl.selectItem(withTitle: selected)
+            periodControl.selectItem(withTitle: selected)
         } else {
-            yearControl.selectItem(withTitle: String(currentYear))
+            periodControl.selectItem(withTitle: "最近一年")
         }
     }
 
@@ -355,7 +361,7 @@ final class StatisticsViewController: NSViewController {
         return StatisticsAggregator.dailyCounts(events: events, endingOn: end, days: days, calendar: calendar)
     }
 
-    @objc private func changeYear() {
+    @objc private func changePeriod() {
         updateStatistics()
     }
 

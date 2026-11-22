@@ -48,6 +48,14 @@ public enum StatisticsAggregator {
         }
     }
 
+    public static func lastYearDailyCounts(
+        events: [SwitchEvent],
+        now: Date,
+        calendar: Calendar = .current
+    ) -> [DailyCount] {
+        dailyCounts(events: events, endingOn: now, days: 365, calendar: calendar)
+    }
+
     public static func todayCount(events: [SwitchEvent], now: Date, calendar: Calendar = .current) -> Int {
         let today = calendar.startOfDay(for: now)
         return events.reduce(0) { count, event in

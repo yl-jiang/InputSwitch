@@ -32,12 +32,13 @@ struct InputSwitchTests {
         SwitchEventStoreTests.shouldClearFileAndMemory()
         SwitchEventStoreTests.shouldKeepValidEventsWhenLineIsCorrupt()
         StatisticsAggregatorTests.shouldReturnConsecutiveDailyCounts()
+        StatisticsAggregatorTests.shouldReturnLastYearDailyCountsAcrossYears()
         StatisticsAggregatorTests.shouldReturnEmptyWhenDaysNotPositive()
         StatisticsAggregatorTests.shouldCountTodayEvents()
         StatisticsAggregatorTests.shouldRankAppsByCountThenName()
         StatisticsAggregatorTests.shouldReturnEmptyWhenLimitNotPositive()
         SwitchCoordinatorTests.shouldRecordAcceptedSwitch()
-        print("PASS: 19 tests")
+        print("PASS: 20 tests")
     }
 
     static func shouldIgnoreAppWithoutRule() {
