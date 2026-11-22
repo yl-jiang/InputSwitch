@@ -206,10 +206,12 @@ final class RulesViewController: NSViewController, NSTableViewDataSource, NSTabl
     }
 
     private func bindState() {
-        store.$rules.sink { [weak self] rules in
-            self?.tableView.reloadData()
-            self?.emptyLabel.isHidden = !rules.isEmpty
-        }.store(in: &cancellables)
+        store.$rules
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] rules in
+                self?.tableView.reloadData()
+                self?.emptyLabel.isHidden = !rules.isEmpty
+            }.store(in: &cancellables)
 
         store.$isPaused.sink { [weak self] isPaused in
             self?.stateLabel.stringValue = isPaused ? "已暂停" : "自动切换中"
